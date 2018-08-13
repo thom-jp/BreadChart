@@ -57,7 +57,7 @@ Sub Click()
         If Not FormerClickedShape Is Nothing Then
         
             Dim flowConnector As Shape
-            Set flowConnector = ChartSheet.Shapes.AddConnector(msoConnectorElbow, 624, 154, 816, 272)
+            Set flowConnector = ChartSheet.Shapes.AddConnector(msoConnectorElbow, 10, 10, 30, 30)
             flowConnector.Line.EndArrowheadStyle = msoArrowheadOpen
             flowConnector.Line.Weight = 1.5
             flowConnector.Line.ForeColor.RGB = vbBlack
@@ -76,7 +76,7 @@ Sub Click()
         Set FormerClickedShape = ClickedShape
         
     Case Else
-        MsgBox "モードを選択してください。"
+        MsgBox "モードを選択してください。", vbInformation
         
     End Select
 End Sub
@@ -148,7 +148,7 @@ Function DetectDirection(s1 As Shape, s2 As Shape) As Direction
     Dim s2VCenter: s2VCenter = s2.Top + (s2.Height / 2)
     Dim VDistance: VDistance = s1VCenter - s2VCenter
 
-    If Abs(HDistance) - Abs(VDistance) > 0 Then
+    If Abs(VDistance) < (s1.Height + s2.Height) / 2 Then
         If HDistance > 0 Then
             DetectDirection = West
         Else
