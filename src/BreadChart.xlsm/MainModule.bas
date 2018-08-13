@@ -51,6 +51,8 @@ Sub Click()
         If ProcessText = vbNullString Then Exit Sub
         Call ActivateProcess(ClickedShape)
         Call ChangeProcessType(ClickedShape, msoShapeFlowchartDecision)
+        ClickedShape.Line.ForeColor.RGB = rgbWhiteSmoke
+        ClickedShape.Fill.ForeColor.RGB = rgbWhiteSmoke
         ClickedShape.TextFrame2.TextRange.Text = ProcessText
         
     Case Mode.mProcessConnection
@@ -83,12 +85,12 @@ End Sub
 
 Sub ActivateProcess(process As Shape)
     With process
-        .TextFrame2.TextRange.Font.Fill.ForeColor.RGB = vbBlack
         .Line.ForeColor.RGB = vbBlack
         .Line.Weight = 2
         .Fill.Transparency = 0
         .Line.DashStyle = msoLineSolid
         .Fill.ForeColor.RGB = vbWhite
+        .TextFrame2.TextRange.Font.Fill.ForeColor.RGB = vbBlack
     End With
 End Sub
 
@@ -96,10 +98,22 @@ Sub DeactivateProcess(process As Shape)
     With process
         .AutoShapeType = msoShapeFlowchartProcess
         .Line.Weight = 0.25
-        .TextFrame2.TextRange.Delete
         .Line.ForeColor.RGB = RGB(150, 150, 150)
         .Fill.Transparency = 1
         .Line.DashStyle = msoLineDash
+        With .TextFrame2
+            .TextRange.Delete
+            .MarginLeft = 0
+            .MarginRight = 0
+            .MarginTop = 0
+            .MarginBottom = 0
+            .VerticalAnchor = msoAnchorMiddle
+            .HorizontalAnchor = msoAnchorCenter
+        End With
+        With .TextFrame
+            .HorizontalOverflow = xlOartHorizontalOverflowOverflow
+            .VerticalOverflow = xlOartVerticalOverflowOverflow
+        End With
     End With
 End Sub
 
