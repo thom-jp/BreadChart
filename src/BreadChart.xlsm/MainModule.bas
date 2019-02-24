@@ -1,4 +1,7 @@
 Attribute VB_Name = "MainModule"
+'DEBUG_MODEがTrueのとき、参照設定した型を使用するように
+'ディレクティブで制御しておきます。Falseの時はObject型を使用します。
+#Const DEBUG_MODE = False
 Option Explicit
 Public Enum Mode
     mDefault = 0
@@ -216,14 +219,61 @@ Sub ChangeProcessType(TargetShape As Shape, T As MsoAutoShapeType)
 End Sub
 
 Sub CompleteChart()
-    If vbOK <> MsgBox( _
-        "一度完成させると編集モードに戻せないのでご注意ください。" & vbNewLine & "続行しますか?", _
-        vbOKCancel + vbExclamation, _
-        "確認") Then Exit Sub
+    Dim chartName As String: chartName _
+        = InputBox("チャート名を入力してください。ブランクの場合はキャンセルします。")
+    If chartName = "" Then
+        MsgBox "キャンセルしました。", vbInformation
+        Exit Sub
+    End If
+    
+    Dim fileName As Variant
+    fileName = _
+        Application.GetSaveAsFilename( _
+             InitialFileName:=chartName _
+           , FileFilter:="Excel ブック(*.xlsx),*.xlsx" _
+           , FilterIndex:=1 _
+           , Title:="保存先の指定" _
+           )
+#If DEBUG_MODE Then
+    Dim fso As FileSystemObject
+#Else
+    Dim fso As Object
+#End If
+    Set fso = CreateObject("Scripting.FileSystemObject")
+    
+    If fso.FileExists(fileName) Then
+        If vbYes <> MsgBox("ファイルは既に存在します。上書きしますか？", vbYesNo + vbDefaultButton2 + vbExclamation) Then
+            MsgBox "キャンセルしました。", vbInformation
+            Exit Sub
+        End If
+    End If
+    
+    'GetSaveAsFilenameは、正常な場合はStringで戻ってくるので、
+    'ここはNot fileNameとはできず、Falseと比較する必要がある。
+    If fileName = False Then
+        MsgBox "キャンセルしました。", vbInformation
+        Exit Sub
+    End If
+    
+    '以下、なぜ一度セーブして開き直してるかというと、
+    'ChartSheetをコピーした後生成されたActiveWorkbookに対し、
+    'Sheets(1)等でシートにアクセスできないエラーが発生した為である。
+    '他のブックでこんなことは無かったので、原因不明。
+    '■エラー発生を確認した環境
+    '   OS 名　Microsoft Windows 10 Home
+    '   OSバージョン　10.0.17134 ビルド 17134
+    '   Excel 2013(15.0.5101.1000) MSO(15.0.5101.1000) 32 ビット
+    'ひょっとしてマクロが記載されたシートだと不具合が出るのかと思って
+    '一度コピーしたブックをxlsx形式で保存し、閉じてから開き直したらシートに対して正常に操作できた。
+    ChartSheet.Copy
+    Application.DisplayAlerts = False
+    ActiveWorkbook.SaveAs fileName
+    Application.DisplayAlerts = True
+    Dim wb As Workbook
+    Set wb = Workbooks.Open(fileName)
+    
     Dim s As Shape
-    Dim Arr() As String
-    ReDim Arr(0)
-    For Each s In ChartSheet.Shapes
+    For Each s In wb.Sheets(1).Shapes
         If s.Type <> msoFormControl Then
             s.OnAction = vbNullString
             If s.Connector Then
@@ -234,8 +284,13 @@ Sub CompleteChart()
             If s.Fill.Transparency = 1 And s.AutoShapeType = msoShapeFlowchartProcess Then
                 s.Delete
             End If
+        Else
+            s.Delete
         End If
     Next
+    wb.Sheets(1).Rows(2).Delete
+    wb.Sheets(1).Range("B1").Value = chartName
+    wb.Save
     Call ChartSheet.ClearButtonState
 End Sub
 
