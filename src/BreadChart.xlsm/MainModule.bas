@@ -284,14 +284,12 @@ Sub CompleteChart()
             If s.Fill.Transparency = 1 And s.AutoShapeType = msoShapeFlowchartProcess Then
                 s.Delete
             End If
-        Else
-            s.Delete
         End If
     Next
-    wb.Sheets(1).Rows(2).Delete
     wb.Sheets(1).Range("B1").Value = chartName
     wb.Save
     Call ChartSheet.ClearButtonState
+    ChartSheet.CurrentMode = mDefault
 End Sub
 
 

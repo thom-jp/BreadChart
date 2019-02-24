@@ -18,26 +18,27 @@ Public Property Let CurrentMode(m As Mode)
 End Property
 
 Sub ClearButtonState()
-    With ChartSheet.Buttons(Array("Mode3", "Mode4", "Mode5", "Mode2")).Font
-        .FontStyle = vbNullString 'To Normal
-        .ColorIndex = 0
-    End With
+    ribbon.ResetToggle
+'    With ChartSheet.Buttons(Array("Mode3", "Mode4", "Mode5", "Mode2")).Font
+'        .FontStyle = vbNullString 'To Normal
+'        .ColorIndex = 0
+'    End With
 End Sub
 
 Sub ModeButton()
-    Set MainModule.FormerClickedShape = Nothing
-    Dim ClickedButton As Button
-    Set ClickedButton = ChartSheet.Buttons(Application.Caller)
-
-    Call ClearButtonState
-    
-    If CurrentMode = CInt(Right(ClickedButton.Name, 1)) Then
-        CurrentMode = Mode.mDefault
-    Else
-        With ClickedButton.Font
-            .FontStyle = "Bold"
-            .ColorIndex = 5
-        End With
-        CurrentMode = CInt(Right(ClickedButton.Name, 1))
-    End If
+'    Set MainModule.FormerClickedShape = Nothing
+'    Dim ClickedButton As Button
+'    Set ClickedButton = ChartSheet.Buttons(Application.Caller)
+'
+'    Call ClearButtonState
+'
+'    If CurrentMode = CInt(Right(ClickedButton.Name, 1)) Then
+'        CurrentMode = Mode.mDefault
+'    Else
+'        With ClickedButton.Font
+'            .FontStyle = "Bold"
+'            .ColorIndex = 5
+'        End With
+'        CurrentMode = CInt(Right(ClickedButton.Name, 1))
+'    End If
 End Sub
