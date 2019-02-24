@@ -1,0 +1,27 @@
+VERSION 1.0 CLASS
+BEGIN
+  MultiUse = -1  'True
+END
+Attribute VB_Name = "ConfigSheet"
+Attribute VB_GlobalNameSpace = False
+Attribute VB_Creatable = False
+Attribute VB_PredeclaredId = True
+Attribute VB_Exposed = True
+Function GetValue(item_name As String)
+    Dim r As Range
+    Set r = Range("A1")
+    Do While r.Value <> "" And r.Value <> item_name
+        Set r = r.Offset(1, 0)
+    Loop
+    GetValue = r.Offset(0, 1).Value
+End Function
+
+Sub LetValue(item_name As String, value_ As String)
+    Dim r As Range
+    Set r = Range("A1")
+    Do While r.Value <> "" And r.Value <> item_name
+        Set r = r.Offset(1, 0)
+    Loop
+    If r.Value = "" Then r.Value = item_name
+    r.Offset(0, 1).Value = value_
+End Sub

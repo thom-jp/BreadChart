@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<customUI onLoad="Ribbon_onLoad" xmlns="http://schemas.microsoft.com/office/2006/01/customui">
+<ribbon>
+<tabs>
+<tab id="MyOriginalRibbon" label="Bread Chart" insertBeforeMso="TabHome">
+
+<group id="GroupA" label="コマンド">
+	<button id="R_ResetToTemplate"
+	imageMso="CreateNewDrawing"
+	size="large"
+	label="ひな型作成"
+	onAction="RibbonMacros"
+	tag="Dummy"
+	/>
+
+	<button id="R_CompleteChart"
+	imageMso="SaveWorkbookTask"
+	size="large"
+	label="チャート発行"
+	onAction="RibbonMacros"
+	tag="Dummy"
+	/>
+</group>
+
+<group id="GroupB" label="モードを選択してください">
+	<toggleButton id="tgl1"
+	imageMso="ShapeRectangle"
+	size="large"
+	getPressed="toggleButton_getPressed"
+	onAction="toggleButton_onAction"
+	label="Process"/>
+	
+	<toggleButton id="tgl2"
+	imageMso="HappyFace"
+	size="large"
+	getPressed="toggleButton_getPressed"
+	onAction="toggleButton_onAction"
+	label="Judge"/>
+
+	<toggleButton id="tgl3"
+	imageMso="ShapeElbowConnectorArrow"
+	size="large"
+	getPressed="toggleButton_getPressed"
+	onAction="toggleButton_onAction"
+	label="Connector"/>
+
+	<toggleButton id="tgl4"
+	imageMso="Delete"
+	size="large"
+	getPressed="toggleButton_getPressed"
+	onAction="toggleButton_onAction"
+	label="Deletion"/>
+</group>
+
+</tab>
+</tabs>
+</ribbon>
+</customUI>
