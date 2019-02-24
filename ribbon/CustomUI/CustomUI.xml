@@ -31,7 +31,7 @@
 	label="Process"/>
 	
 	<toggleButton id="tgl2"
-	imageMso="HappyFace"
+	image="myJudge"
 	size="large"
 	getPressed="toggleButton_getPressed"
 	onAction="toggleButton_onAction"
