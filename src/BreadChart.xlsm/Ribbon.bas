@@ -73,6 +73,7 @@ Sub toggleButton_onAction(control As IRibbonControl, pressed As Boolean)
             ChartSheet.CurrentMode = mDefault
         End If
     Case "tgl3"
+        Set MainModule.FormerClickedShape = Nothing
         toggleButton3 = pressed
         If toggleButton3 = True Then
             toggleButton1 = False
