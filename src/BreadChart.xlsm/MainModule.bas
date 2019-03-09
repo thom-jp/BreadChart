@@ -143,8 +143,7 @@ Sub ResetToTemplate()
         Call DeactivateProcess(sh)
         sh.OnAction = "Click"
     Next
-    Call ChartSheet.ClearButtonState
-    ChartSheet.CurrentMode = mDefault
+    Call ribbon.ResetMode
 End Sub
 
 Sub DeleteAllChart()
@@ -288,9 +287,9 @@ Sub CompleteChart()
     Next
     wb.Sheets(1).Range("B1").Value = chartName
     wb.Save
-    Call ChartSheet.ClearButtonState
-    ChartSheet.CurrentMode = mDefault
+    Call ribbon.ResetMode
 End Sub
+
 
 
 
