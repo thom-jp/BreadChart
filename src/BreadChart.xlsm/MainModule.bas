@@ -66,7 +66,7 @@ Sub Click()
             Set flowConnector = ChartSheet.Shapes.AddConnector(msoConnectorElbow, 10, 10, 30, 30)
             flowConnector.Line.EndArrowheadStyle = msoArrowheadOpen
             flowConnector.Line.Weight = 1.5
-            flowConnector.Line.ForeColor.RGB = vbBlack
+            flowConnector.Line.ForeColor.RGB = ConfigSheet.GetValue("ConnectorColor")
             
             Dim ConnectDirection As Direction
             ConnectDirection = DetectDirection(FormerClickedShape, ClickedShape)
