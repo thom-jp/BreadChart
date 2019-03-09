@@ -54,8 +54,9 @@ Sub Click()
         If ProcessText = vbNullString Then Exit Sub
         Call ActivateProcess(ClickedShape)
         Call ChangeProcessType(ClickedShape, msoShapeFlowchartDecision)
-        ClickedShape.Line.ForeColor.RGB = rgbWhiteSmoke
-        ClickedShape.Fill.ForeColor.RGB = rgbWhiteSmoke
+        ClickedShape.Line.ForeColor.RGB = ConfigSheet.GetValue("JudgeLineColor")
+        ClickedShape.Fill.ForeColor.RGB = ConfigSheet.GetValue("JudgeFillColor")
+        ClickedShape.TextFrame2.TextRange.Font.Fill.ForeColor.RGB = ConfigSheet.GetValue("JudgeFontColor")
         ClickedShape.TextFrame2.TextRange.Text = ProcessText
         
     Case Mode.mProcessConnection
@@ -88,12 +89,12 @@ End Sub
 
 Sub ActivateProcess(process As Shape)
     With process
-        .Line.ForeColor.RGB = vbBlack
+        .Line.ForeColor.RGB = ConfigSheet.GetValue("ProcessLineColor")
         .Line.Weight = 2
         .Fill.Transparency = 0
         .Line.DashStyle = msoLineSolid
-        .Fill.ForeColor.RGB = vbWhite
-        .TextFrame2.TextRange.Font.Fill.ForeColor.RGB = vbBlack
+        .Fill.ForeColor.RGB = ConfigSheet.GetValue("ProcessFillColor")
+        .TextFrame2.TextRange.Font.Fill.ForeColor.RGB = ConfigSheet.GetValue("ProcessFontColor")
     End With
 End Sub
 
