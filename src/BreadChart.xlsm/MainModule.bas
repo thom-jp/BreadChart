@@ -60,8 +60,7 @@ Sub Click()
         ClickedShape.TextFrame2.TextRange.Text = ProcessText
         
     Case Mode.mProcessConnection
-        If Not FormerClickedShape Is Nothing Then
-        
+        If Not (FormerClickedShape Is Nothing Or IsShiftKeyPressed) Then
             Dim flowConnector As Shape
             Set flowConnector = ChartSheet.Shapes.AddConnector(msoConnectorElbow, 10, 10, 30, 30)
             flowConnector.Line.EndArrowheadStyle = msoArrowheadOpen
