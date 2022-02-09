@@ -266,6 +266,7 @@ Sub CompleteChart()
     '一度コピーしたブックをxlsx形式で保存し、閉じてから開き直したらシートに対して正常に操作できた。
     ChartSheet.Copy after:=ChartSheet
     Dim sh As Worksheet: Set sh = ActiveSheet
+    sh.Name = "Sheet1"
     sh.Range("B1").Value = chartName
     Dim s As Shape
     For Each s In sh.Shapes
