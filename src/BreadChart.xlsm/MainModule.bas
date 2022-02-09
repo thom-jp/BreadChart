@@ -264,15 +264,12 @@ Sub CompleteChart()
     '   Excel 2013(15.0.5101.1000) MSO(15.0.5101.1000) 32 ビット
     'ひょっとしてマクロが記載されたシートだと不具合が出るのかと思って
     '一度コピーしたブックをxlsx形式で保存し、閉じてから開き直したらシートに対して正常に操作できた。
-    ChartSheet.Copy
-    Application.DisplayAlerts = False
-    ActiveWorkbook.SaveAs fileName
-    Application.DisplayAlerts = True
-    Dim wb As Workbook
-    Set wb = Workbooks.Open(fileName)
-    
+    ChartSheet.Copy after:=ChartSheet
+    Dim sh As Worksheet: Set sh = ActiveSheet
+    sh.Name = "Sheet1"
+    sh.Range("B1").Value = chartName
     Dim s As Shape
-    For Each s In wb.Sheets(1).Shapes
+    For Each s In sh.Shapes
         If s.Type <> msoFormControl Then
             s.OnAction = vbNullString
             If s.Connector Then
@@ -285,12 +282,24 @@ Sub CompleteChart()
             End If
         End If
     Next
-    wb.Sheets(1).Range("B1").Value = chartName
-    wb.Save
+    ChartSheet.Select
+    
+    sh.Move
+    Application.DisplayAlerts = False
+    ActiveWorkbook.SaveAs fileName
+    Application.DisplayAlerts = True
+    ActiveWorkbook.Close
     Call ribbon.ResetMode
+    
+    'いくつかの環境で、ribbon.ResetModeを実行するとエラーが発生することが判明した。
+    'EnableEventsをFalseにしたり、DoEventsを挟んでみたり、実行の位置を変えてみたが、
+    '別名保存したファイルを閉じると改善することが判明。ただ同じプロシージャ内で開き直すとまたエラーになることが判明し、
+    '現在のプロシージャとは切り離すための苦肉の策としてOnTime実行呼び出しとしている。これは成功する。
+    '注意) 殆どの環境ではこんなことをしなくてもうまくいく為、本件についてこうしたらうまくいったというアドバイスは特に募集しない。
+    Call Application.OnTime(Now + TimeValue("00:00:01"), "'OpenSavedFile " & """" & fileName & """'")
+    
 End Sub
 
-
-
-
-
+Sub OpenSavedFile(f)
+    Workbooks.Open f
+End Sub
