@@ -49,6 +49,13 @@ Sub Click()
         Call ChangeProcessType(ClickedShape, msoShapeFlowchartProcess)
         ClickedShape.TextFrame2.TextRange.Text = ProcessText
         
+        '指定しないとテーマフォント扱いになり、別ブック化したときにフォントが変わってはみ出す為。
+        With ClickedShape.TextFrame2.TextRange.Font
+            .NameComplexScript = "ＭＳ ゴシック"
+            .NameFarEast = "ＭＳ ゴシック"
+            .Name = "ＭＳ ゴシック"
+        End With
+        
     Case Mode.mJudgementProcessInput
         ProcessText = InputBox("入力してください", , ClickedShape.TextFrame2.TextRange.Text)
         If ProcessText = vbNullString Then Exit Sub
@@ -58,6 +65,13 @@ Sub Click()
         ClickedShape.Fill.ForeColor.RGB = ConfigSheet.GetValue("JudgeFillColor")
         ClickedShape.TextFrame2.TextRange.Font.Fill.ForeColor.RGB = ConfigSheet.GetValue("JudgeFontColor")
         ClickedShape.TextFrame2.TextRange.Text = ProcessText
+        
+        '指定しないとテーマフォント扱いになり、別ブック化したときにフォントが変わってはみ出す為。
+        With ClickedShape.TextFrame2.TextRange.Font
+            .NameComplexScript = "ＭＳ ゴシック"
+            .NameFarEast = "ＭＳ ゴシック"
+            .Name = "ＭＳ ゴシック"
+        End With
         
     Case Mode.mProcessConnection
         If Not (FormerClickedShape Is Nothing Or IsShiftKeyPressed) Then
