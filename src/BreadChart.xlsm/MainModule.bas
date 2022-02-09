@@ -1,6 +1,6 @@
 Attribute VB_Name = "MainModule"
 'DEBUG_MODEがTrueのとき、参照設定した型を使用するように
-'ディレクティブで制御しておきます。Falseの時はObject型を使用します。
+'ディレクティブで制御する。Falseの時はObject型を使用する。
 #Const DEBUG_MODE = False
 Option Explicit
 Public Enum Mode
@@ -49,7 +49,7 @@ Sub Click()
         Call ChangeProcessType(ClickedShape, msoShapeFlowchartProcess)
         ClickedShape.TextFrame2.TextRange.Text = ProcessText
         
-        '指定しないとテーマフォント扱いになり、別ブック化したときにフォントが変わってはみ出す為。
+        'フォントを明示的に指定しないとテーマフォント扱いになり、別ブック化したときにフォントが変わってはみ出す為。
         With ClickedShape.TextFrame2.TextRange.Font
             .NameComplexScript = "ＭＳ ゴシック"
             .NameFarEast = "ＭＳ ゴシック"
@@ -66,7 +66,7 @@ Sub Click()
         ClickedShape.TextFrame2.TextRange.Font.Fill.ForeColor.RGB = ConfigSheet.GetValue("JudgeFontColor")
         ClickedShape.TextFrame2.TextRange.Text = ProcessText
         
-        '指定しないとテーマフォント扱いになり、別ブック化したときにフォントが変わってはみ出す為。
+        'フォントを明示的に指定しないとテーマフォント扱いになり、別ブック化したときにフォントが変わってはみ出す為。
         With ClickedShape.TextFrame2.TextRange.Font
             .NameComplexScript = "ＭＳ ゴシック"
             .NameFarEast = "ＭＳ ゴシック"
@@ -163,7 +163,10 @@ End Sub
 Sub DeleteAllChart()
     Dim s As Shape
     For Each s In ActiveSheet.Shapes
-        If s.Type <> msoFormControl Then    'For exclude buttons
+        '次のIf文はもともと操作ボタンをフォームに貼り付けていた頃の名残で、
+        '普通のシェイプは消すが、ボタンは例外として消さないための策。
+        '現在はリボンに移行したので必須ではないが、そもそも消したいのは普通のシェイプだけなのであえてこのまま。
+        If s.Type <> msoFormControl Then
             s.Delete
         End If
     Next
@@ -268,9 +271,11 @@ Sub CompleteChart()
         Exit Sub
     End If
     
-    '以下、なぜ一度セーブして開き直してるかというと、
-    'ChartSheetをコピーした後生成されたActiveWorkbookに対し、
-    'Sheets(1)等でシートにアクセスできないエラーが発生した為である。
+    'もともとはChartSheetを先にコピーして生成されたActiveWorkbookに対して操作を行うコードだったが、
+    '環境によってはSheets(1)等でシートにアクセスできないエラーが発生した為に、
+    '一旦シートを保存してから開き直して操作する方針に変更した。
+    'しかし更に別の環境ではこの方法で別のエラーが出たため、
+    'ブック内でひとまずシートを複製して操作を完了してから切り離すよう処理を変更した。
     '他のブックでこんなことは無かったので、原因不明。
     '■エラー発生を確認した環境
     '   OS 名　Microsoft Windows 10 Home
@@ -307,7 +312,8 @@ Sub CompleteChart()
     
     'いくつかの環境で、ribbon.ResetModeを実行するとエラーが発生することが判明した。
     'EnableEventsをFalseにしたり、DoEventsを挟んでみたり、実行の位置を変えてみたが、
-    '別名保存したファイルを閉じると改善することが判明。ただ同じプロシージャ内で開き直すとまたエラーになることが判明し、
+    '別名保存したファイルを閉じると改善することが判明。
+    'ただ同じプロシージャ内で開き直すとまたエラーになることが判明し、
     '現在のプロシージャとは切り離すための苦肉の策としてOnTime実行呼び出しとしている。これは成功する。
     '注意) 殆どの環境ではこんなことをしなくてもうまくいく為、本件についてこうしたらうまくいったというアドバイスは特に募集しない。
     Call Application.OnTime(Now + TimeValue("00:00:01"), "'OpenSavedFile " & """" & fileName & """'")
