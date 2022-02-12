@@ -292,7 +292,11 @@ Sub CompleteChart()
         If s.Type <> msoFormControl Then
             s.OnAction = vbNullString
             If s.Connector Then
-                If s.Height < 2 Or s.Width < 2 Then
+                'カギ線矢印はまっすぐに繋いだ場合も僅かな段差がつくので、完成時にストレート矢印に差し替える。
+                '高さまたは幅が2未満だったら始点と終点のx座標またはy座標が一致した→つまりストレート矢印と見做せる。
+                'ここで例外として、コの字につなげた場合は迂回部分が幅にカウントされない為、別途Adjustments(黄色い点)の値で判定することにした。
+                'ストレート矢印の場合は0～1(つまり割合)で位置が表され、コの字の場合は0を起点に正負の方向に幅が表される。
+                If (s.Height < 2 Or s.Width < 2) And s.Adjustments(1) < 1 Then
                     s.ConnectorFormat.Type = msoConnectorStraight
                 End If
             End If
